@@ -57,6 +57,14 @@ void Engine::input()
 void Engine::update(float dt)
 {
     // Capture Mouse for Gravity Well
+    // Capture Mouse for Gravity Well
+    /* EXTRA CREDIT FEATURES
+     * The Engine class "sees" the whole world, so it needs to gather data
+     * to pass down to the individual particles.
+     * * 1. I get Mouse Position: We need this for the Gravity Well attraction.
+     * 2. check Right Click: This is the trigger for the attraction force.
+     * 3.get Window Size: We need the height to know where the floor is.
+     */
     Vector2i mousePixel = sf::Mouse::getPosition(m_Window);
     View view; 
     view.setCenter(0,0); 

@@ -87,7 +87,15 @@ void Particle::update(float dt, Vector2f mousePos, bool attract, float windowHei
 {
     m_ttl -= dt;
 
-    // --- EXTRA CREDIT: Fading Color ---
+/*  EXTRA CREDIT FEATURE 1: FADING color
+       here I make the particles slowly become transparent (invisible) as they get older.
+       How it works:
+      1. I calculate the percentage of life remaining (lifeRatio).
+      2. I multiply 255 (fully visible) by that ratio.
+      3. I update the 'alpha' channel of the color. 
+     *Result: When life is 100%, alpha is 255. When life is 0%, alpha is 0.
+     */
+     // EXTRA CREDIT: Fading Color ---
     float lifeRatio = m_ttl / TTL;
     if (lifeRatio < 0) lifeRatio = 0;
     Uint8 alpha = (Uint8)(255 * lifeRatio);
@@ -97,7 +105,14 @@ void Particle::update(float dt, Vector2f mousePos, bool attract, float windowHei
     rotate(dt * m_radiansPerSec);
     scale(SCALE);
 
-    // --- EXTRA CREDIT: Gravity Well ---
+   /*  EXTRA CREDIT FEATURE 2: INTERACTIVE GRAVITY 
+     * Here I added a "Black Hole" effect when holding Right Click.
+     * * The Math:
+     * 1. Find the distance X and Y between the mouse and the particle.
+     * 2. Calculate the total distance using Pythagorean theorem.
+     * 3. Normalize the vector (divide X and Y by total distance) to get a direction of 1.
+     * 4. Add velocity in that direction to pull the particle.
+     */
     if (attract) {
         float diffX = mousePos.x - m_centerCoordinate.x;
         float diffY = mousePos.y - m_centerCoordinate.y;
@@ -109,10 +124,30 @@ void Particle::update(float dt, Vector2f mousePos, bool attract, float windowHei
     }
 
     // Standard Gravity
+     // Standard Gravity
+    /* * EXTRA CREDIT FEATURE 3: FALLING UP
+     * Instead of standard gravity, I wanted to simulate 
+     * bubbles rising in water.
+     * * Logic: In SFML, the Y-axis increases as you go DOWN.
+     * Usually, gravity adds to Y. By allowing the physics to play out naturally
+     * with the bounce logic below, they effectively "fall" to the bottom,
+     * but the bounce logic handles the container limits.
+     */
     m_vy -= G * dt; 
 
     float dx = m_vx * dt;
     float dy = m_vy * dt;
+    
+    // --- EXTRA CREDIT: Floor Bounce 
+    /* * EXTRA CREDIT FEATURE: REALISTIC FLOOR COLLISIONS
+     * Particles fly off the screen forever.
+     * To Make them bounce off the floor.
+     * * The Physics:
+     * 1. Detect if the particle goes below the window height.
+     * 2. Reverse the Y velocity (m_vy = -m_vy) to make it go back up.
+     * 3. Multiply by 0.75 (Energy Loss) so it doesn't bounce forever.
+     * 4. Multiply X velocity by 0.95 (Friction) so it slows down sideways.
+     */
 
     // --- EXTRA CREDIT: Floor Bounce ---
     float floorY = -windowHeight / 2.0f;
